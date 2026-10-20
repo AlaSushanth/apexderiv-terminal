@@ -1,5 +1,5 @@
 # 🌐 ApexDeriv — International Derivatives & Order Flow Execution Terminal
-> **Modeled for Futures First (Hertshten Group) — Trainee: International Markets**
+
 
 ApexDeriv is an institutional-grade derivatives trading terminal and market microstructure simulator. Unlike standard retail charting apps that rely on lagging technical indicators, ApexDeriv mirrors the high-speed execution software used on proprietary derivatives trading desks (such as *Trading Technologies (TT)*, *Stellar*, and *CQG*).
 
