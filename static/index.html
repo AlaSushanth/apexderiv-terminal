@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ApexDeriv | Futures First International Markets Workstation</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Circuit Breaker Hard Alert Banner -->
+  <div id="circuit-breaker-banner" class="alert-banner" style="display: none;">
+    <div>
+      <span style="font-size: 14px; margin-right: 8px;">🚨</span>
+      <span id="breaker-reason-text">CIRCUIT BREAKER TRIPPED! TRADING HALTED BY RISK MANAGER.</span>
+    </div>
+    <button class="btn-panic" onclick="resetRisk()" style="background:#dc2626; border-color:#fca5a5; padding: 4px 12px; font-weight:800;">
+      RESET DESK RISK LIMITS
+    </button>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="brand-badge">
+      <div class="logo-circle">FF</div>
+      <div>
+        <span class="brand-title">APEXDERIV</span>
+        <span class="brand-subtitle">FUTURES FIRST SIMULATOR</span>
+      </div>
+    </div>
+
+    <div class="hud-stats">
+      <div class="hud-item">
+        <span class="hud-label">ACTIVE CONTRACT</span>
+        <span id="header-contract-name" class="hud-value mono" style="color: #38bdf8;">ZN - 10Y Treasury</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">LAST PRICE</span>
+        <span id="header-last-price" class="hud-value mono" style="color: #f8fafc;">109.5000</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">DESK POSITION</span>
+        <span id="hud-position" class="hud-value mono">FLAT</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">DAY P&L (USD)</span>
+        <span id="hud-net-pnl" class="hud-value mono" style="color: #10b981;">+$0.00</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">ACCOUNT EQUITY</span>
+        <span id="hud-balance" class="hud-value mono">$100,000.00</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">TRIMESTER TIER</span>
+        <span id="hud-trimester-tier" class="hud-value" style="color: #f59e0b; font-size:12px;">Probationary</span>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <button id="audio-toggle-btn" onclick="toggleAudio()" style="background:#1e293b; border:1px solid #334155; color:#cbd5e1; font-size:11px; padding:4px 8px; border-radius:4px; cursor:pointer;">
+        🔊 SOUND: ON
+      </button>
+      <div id="connection-status" class="mono" style="font-size: 11px; font-weight: 700; color: #10b981;">
+        CONNECTING...
+      </div>
+    </div>
+  </header>
+
+  <!-- Workspace 4-Column Grid -->
+  <main class="workspace-grid">
+
+    <!-- Column 1: Watchlist & Inter-Market Spread Desk -->
+    <section class="panel">
+      <div class="panel-header">
+        <span>Global Watchlist</span>
+        <span style="font-size: 10px; color:#64748b;">CME / ICE</span>
+      </div>
+      <div id="watchlist-items" class="ticker-list">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <div class="panel-header" style="border-top: 1px solid var(--border-color); margin-top: auto;">
+        <span>Spread Trading Desk</span>
+        <span style="font-size: 10px; color:#38bdf8;">Basis / Curves</span>
+      </div>
+      <div class="spread-box">
+        <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px;">
+          <span style="color: #94a3b8; font-weight: 600;">2Y/10Y Yield Curve Spread:</span>
+          <span id="spread-2y10y-val" class="mono" style="color: #38bdf8; font-weight: 700;">+7.25 bps</span>
+        </div>
+        <div style="font-size: 9px; color: #64748b;">
+          Formula: (ZN - ZT) • Steepener / Flattener Desk
+        </div>
+      </div>
+      <div class="spread-box" style="margin-top: 0;">
+        <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px;">
+          <span style="color: #94a3b8; font-weight: 600;">WTI / Brent Crack Spread:</span>
+          <span id="spread-clbz-val" class="mono" style="color: #f59e0b; font-weight: 700;">-$3.85</span>
+        </div>
+        <div style="font-size: 9px; color: #64748b;">
+          Formula: CL - BZ Arbitrage
+        </div>
+      </div>
+      
+      <div style="padding: 10px; font-size: 10px; color: #475569; border-top: 1px solid var(--border-color);">
+        <strong style="color: #94a3b8;">Hotkeys:</strong><br>
+        [Space] = Flatten Active Desk<br>
+        [Esc] = Cancel All Orders<br>
+        [1] [2] [5] = Change Lots
+      </div>
+    </section>
+
+    <!-- Column 2: DOM (Depth of Market) Price Ladder -->
+    <section class="panel">
+      <div class="panel-header">
+        <span>Order Book (DOM Ladder)</span>
+        <span style="font-size: 10px; color:#38bdf8;">Click to Limit</span>
+      </div>
+
+      <div class="dom-action-bar">
+        <!-- Lot selector -->
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <span style="font-size: 10px; color: #64748b; font-weight: 700;">ORDER QTY:</span>
+          <div class="lot-selector">
+            <button class="lot-btn active" data-lot="1" onclick="setLot(1)">1 Lot</button>
+            <button class="lot-btn" data-lot="2" onclick="setLot(2)">2 Lots</button>
+            <button class="lot-btn" data-lot="5" onclick="setLot(5)">5 Lots</button>
+          </div>
+        </div>
+
+        <!-- Quick Market Orders -->
+        <div class="quick-trade-row">
+          <button class="btn-buy" onclick="placeOrder('MARKET', 'BUY')">BUY MKT</button>
+          <button class="btn-sell" onclick="placeOrder('MARKET', 'SELL')">SELL MKT</button>
+        </div>
+
+        <!-- Utility Buttons -->
+        <div class="quick-trade-row">
+          <button class="btn-panic" onclick="cancelAllOrders()">CANCEL ALL [ESC]</button>
+          <button class="btn-panic" onclick="flattenActive()" style="background:#450a0a; border-color:#991b1b; color:#fca5a5;">FLATTEN [SPACE]</button>
+        </div>
+      </div>
+
+      <!-- Ladder Table -->
+      <div class="ladder-header">
+        <span>BID SIZE</span>
+        <span>PRICE</span>
+        <span>ASK SIZE</span>
+      </div>
+
+      <div id="ladder-rows" class="ladder-scroll">
+        <!-- Live rows dynamically injected -->
+      </div>
+    </section>
+
+    <!-- Column 3: Microstructure Charts (Candle + POC + CVD) -->
+    <section class="panel">
+      <div class="panel-header">
+        <span>Order Flow & Microstructure Analytics</span>
+        <span style="font-size: 10px; color:#f59e0b;">Volume Profile & CVD</span>
+      </div>
+      <div class="chart-container">
+        <canvas id="chart-canvas"></canvas>
+      </div>
+    </section>
+
+    <!-- Column 4: Time & Sales + Trainee Drills + Risk Scorecard -->
+    <section class="panel">
+      <div class="panel-header">
+        <span>Trainee Flight Simulator</span>
+        <span style="font-size: 10px; color:#ef4444;">Macro Drills</span>
+      </div>
+
+      <!-- Scenario Drill Buttons -->
+      <div class="scenario-grid">
+        <button class="scenario-btn" data-scenario="FOMC_SHOCK" onclick="triggerScenario('FOMC_SHOCK')">
+          <div>
+            <strong>FOMC Rate Shock (+50bps)</strong>
+            <div style="font-size: 9px; color:#9ca3af;">Treasury 10Y selloff spike</div>
+          </div>
+          <span class="sc-badge mono" style="font-size: 9px; padding: 2px 5px; background:#1f2937; border-radius:3px;">IDLE</span>
+        </button>
+
+        <button class="scenario-btn" data-scenario="CPI_SURPRISE" onclick="triggerScenario('CPI_SURPRISE')">
+          <div>
+            <strong>US CPI Inflation Print (+0.5%)</strong>
+            <div style="font-size: 9px; color:#9ca3af;">Index gap & bond vol expansion</div>
+          </div>
+          <span class="sc-badge mono" style="font-size: 9px; padding: 2px 5px; background:#1f2937; border-radius:3px;">IDLE</span>
+        </button>
+
+        <button class="scenario-btn" data-scenario="OPEC_CUT" onclick="triggerScenario('OPEC_CUT')">
+          <div>
+            <strong>OPEC+ Emergency Supply Cut</strong>
+            <div style="font-size: 9px; color:#9ca3af;">Crude oil buy order sweep</div>
+          </div>
+          <span class="sc-badge mono" style="font-size: 9px; padding: 2px 5px; background:#1f2937; border-radius:3px;">IDLE</span>
+        </button>
+
+        <button class="scenario-btn" data-scenario="FLASH_VACUUM" onclick="triggerScenario('FLASH_VACUUM')">
+          <div>
+            <strong>Flash Liquidity Vacuum</strong>
+            <div style="font-size: 9px; color:#9ca3af;">Thin order book slippage test</div>
+          </div>
+          <span class="sc-badge mono" style="font-size: 9px; padding: 2px 5px; background:#1f2937; border-radius:3px;">IDLE</span>
+        </button>
+      </div>
+
+      <!-- Scenario News Ticker -->
+      <div id="scenario-logs" style="padding: 6px 8px; font-size: 10px; min-height: 48px; background: #060911; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
+        <div style="color: #64748b;">Ready. Select a macro news event to initiate high-speed trading drill.</div>
+      </div>
+
+      <!-- Time & Sales Tape -->
+      <div class="panel-header" style="border-top: 1px solid var(--border-color);">
+        <span>Time & Sales Tape</span>
+        <span style="font-size: 10px; color:#64748b;">Aggressor Flow</span>
+      </div>
+      <div id="tape-items" style="flex: 1; overflow-y: hidden; background: #070b14;">
+        <!-- Tape rows -->
+      </div>
+
+      <!-- Desk Risk Scorecard -->
+      <div class="panel-header" style="border-top: 1px solid var(--border-color);">
+        <span>Desk Risk Scorecard</span>
+        <span style="font-size: 10px; color:#10b981;">Futures First Policy</span>
+      </div>
+      <div style="padding: 8px; background: #0a0f1d; font-size: 11px;">
+        <div style="display:flex; justify-content:space-between; margin-bottom: 4px;">
+          <span style="color:#94a3b8;">Realized Session P&L:</span>
+          <span id="risk-realized-pnl" class="mono" style="font-weight:700;">$0.00</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom: 4px;">
+          <span style="color:#94a3b8;">Win Rate:</span>
+          <span id="risk-win-rate" class="mono" style="font-weight:700;">0.0% (0 trades)</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom: 6px;">
+          <span style="color:#94a3b8;">Projected Bonus (Trimester):</span>
+          <span id="risk-projected-bonus" class="mono" style="font-weight:700; color:#f59e0b;">₹ 0</span>
+        </div>
+
+        <!-- Drawdown Gauge -->
+        <div style="margin-top: 6px;">
+          <div style="display:flex; justify-content:space-between; font-size:9px; color:#64748b; margin-bottom:2px;">
+            <span>MAX DAILY LOSS CIRCUIT BREAKER (-$1,500)</span>
+            <span id="drawdown-label">0% of Limit</span>
+          </div>
+          <div style="height: 6px; background:#1e293b; border-radius:3px; overflow:hidden;">
+            <div id="drawdown-gauge-bar" style="width: 0%; height:100%; background:#3b82f6; transition: width 0.2s;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

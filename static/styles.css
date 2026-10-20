@@ -1,0 +1,474 @@
+:root {
+  --bg-dark: #090d16;
+  --bg-panel: #0e1422;
+  --bg-panel-hover: #141c30;
+  --border-color: #1e293b;
+  --border-focus: #38bdf8;
+  
+  --text-main: #e2e8f0;
+  --text-muted: #64748b;
+  --text-dim: #475569;
+  
+  --bull-green: #10b981;
+  --bull-green-bg: rgba(16, 185, 129, 0.15);
+  --bull-green-bar: rgba(16, 185, 129, 0.35);
+  
+  --bear-red: #ef4444;
+  --bear-red-bg: rgba(239, 68, 68, 0.15);
+  --bear-red-bar: rgba(239, 68, 68, 0.35);
+
+  --accent-cyan: #06b6d4;
+  --accent-amber: #f59e0b;
+  --accent-purple: #8b5cf6;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  user-select: none;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.mono {
+  font-family: "JetBrains Mono", Consolas, "Courier New", monospace;
+}
+
+/* Header */
+header {
+  height: 52px;
+  background: #0a0f1d;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  z-index: 10;
+}
+
+.brand-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #0284c7, #06b6d4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  color: white;
+  font-size: 14px;
+  box-shadow: 0 0 12px rgba(6, 182, 212, 0.4);
+}
+
+.brand-title {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #f8fafc;
+}
+
+.brand-subtitle {
+  font-size: 11px;
+  color: #38bdf8;
+  font-weight: 600;
+  margin-left: 6px;
+  padding: 2px 6px;
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: 4px;
+}
+
+.hud-stats {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.hud-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.hud-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+.hud-value {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* Grid Layout */
+.workspace-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 240px 320px 1fr 300px;
+  gap: 6px;
+  padding: 6px;
+  background: #070a12;
+  overflow: hidden;
+}
+
+.panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.panel-header {
+  height: 32px;
+  background: #0c1220;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+/* Watchlist & Spreads */
+.ticker-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+}
+
+.ticker-card {
+  padding: 8px 10px;
+  background: #0b101c;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ticker-card:hover {
+  background: var(--bg-panel-hover);
+  border-color: #334155;
+}
+
+.ticker-card.active {
+  background: rgba(6, 182, 212, 0.1);
+  border-color: var(--accent-cyan);
+}
+
+.spread-box {
+  margin: 8px;
+  padding: 10px;
+  background: #080c16;
+  border: 1px dashed #334155;
+  border-radius: 5px;
+}
+
+/* DOM / Ladder Panel */
+.dom-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.dom-action-bar {
+  padding: 8px;
+  background: #090f1d;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lot-selector {
+  display: flex;
+  gap: 4px;
+}
+
+.lot-btn {
+  flex: 1;
+  padding: 4px 0;
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #cbd5e1;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.lot-btn.active {
+  background: var(--accent-cyan);
+  color: black;
+  border-color: var(--accent-cyan);
+}
+
+.quick-trade-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.btn-buy {
+  background: #059669;
+  color: white;
+  border: none;
+  padding: 8px 0;
+  font-size: 12px;
+  font-weight: 800;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: filter 0.1s;
+}
+
+.btn-sell {
+  background: #dc2626;
+  color: white;
+  border: none;
+  padding: 8px 0;
+  font-size: 12px;
+  font-weight: 800;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: filter 0.1s;
+}
+
+.btn-buy:hover, .btn-sell:hover {
+  filter: brightness(1.15);
+}
+
+.btn-panic {
+  background: #1e293b;
+  border: 1px solid #475569;
+  color: #f1f5f9;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 0;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.btn-panic:hover {
+  background: #334155;
+}
+
+/* Ladder Table */
+.ladder-header {
+  display: grid;
+  grid-template-columns: 75px 1fr 75px;
+  background: #060911;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 10px;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 4px 0;
+  font-weight: 700;
+}
+
+.ladder-scroll {
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+}
+
+.ladder-row {
+  display: grid;
+  grid-template-columns: 75px 1fr 75px;
+  height: 24px;
+  line-height: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.ladder-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.ladder-cell {
+  position: relative;
+  text-align: center;
+  overflow: hidden;
+}
+
+.ladder-bid {
+  color: var(--bull-green);
+  text-align: right;
+  padding-right: 10px;
+}
+
+.ladder-ask {
+  color: var(--bear-red);
+  text-align: left;
+  padding-left: 10px;
+}
+
+.depth-bar-bid {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--bull-green-bar);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.depth-bar-ask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  background: var(--bear-red-bar);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.ladder-price {
+  font-weight: 700;
+  background: #0a0f1c;
+  border-left: 1px solid rgba(255, 255, 255, 0.06);
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  color: #f1f5f9;
+}
+
+.ladder-price.last-traded {
+  background: #0284c7;
+  color: #ffffff;
+  box-shadow: 0 0 8px #0284c7;
+}
+
+.my-order-pill {
+  position: absolute;
+  top: 2px;
+  left: 4px;
+  background: var(--accent-amber);
+  color: black;
+  font-size: 9px;
+  font-weight: 900;
+  border-radius: 2px;
+  padding: 0 4px;
+  line-height: 18px;
+  z-index: 5;
+}
+
+/* Charts */
+.chart-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+}
+
+canvas {
+  width: 100%;
+  flex: 1;
+  display: block;
+}
+
+/* Tape / Simulator / Risk */
+.tape-row {
+  display: grid;
+  grid-template-columns: 60px 1fr 50px 45px;
+  padding: 3px 6px;
+  font-size: 11px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.tape-buy {
+  color: var(--bull-green);
+}
+
+.tape-sell {
+  color: var(--bear-red);
+}
+
+/* Simulator scenario buttons */
+.scenario-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 5px;
+  padding: 8px;
+}
+
+.scenario-btn {
+  background: #111827;
+  border: 1px solid #374151;
+  color: #e5e7eb;
+  padding: 7px 10px;
+  font-size: 11px;
+  text-align: left;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.scenario-btn:hover {
+  border-color: #60a5fa;
+  background: #1f2937;
+}
+
+.scenario-btn.running {
+  border-color: #ef4444;
+  background: rgba(239, 68, 68, 0.15);
+  animation: pulse-red 1s infinite alternate;
+}
+
+@keyframes pulse-red {
+  from { box-shadow: 0 0 4px rgba(239, 68, 68, 0.2); }
+  to { box-shadow: 0 0 12px rgba(239, 68, 68, 0.6); }
+}
+
+/* Circuit Breaker Alert Banner */
+.alert-banner {
+  background: linear-gradient(90deg, #7f1d1d, #991b1b);
+  border-bottom: 1px solid #ef4444;
+  color: white;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: #090d16;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
