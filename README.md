@@ -54,14 +54,4 @@ This automatically boots the FastAPI backend, initiates WebSocket data feeds, an
 
 ---
 
-## 💼 How to Present This Project in Futures First Interviews
 
-### 1. Resume Bullet Points
-> - *Architected **ApexDeriv**, an institutional derivatives trading terminal modeled after proprietary trading desks (Trading Technologies), featuring a live Level 2 DOM price ladder and order matching engine.*
-> - *Engineered real-time market microstructure analytics including Cumulative Volume Delta (CVD), Volume Profile Point of Control (POC), and synthetic 2Y/10Y Treasury yield curve spreads.*
-> - *Implemented strict proprietary risk management controls with a -$1,500 daily drawdown circuit breaker and an event-driven macro flight simulator replaying FOMC and CPI volatility shocks.*
-
-### 2. Key Concepts to Discuss with the Interviewer
-- **Why DOM over Candlesticks:** Explain that prop traders look for order queue priority, liquidity absorption, and aggressive vs passive order flow rather than static historical charts.
-- **Spread Trading:** Explain how trading the 2Y/10Y spread isolates yield curve shape changes while neutralizing general market direction.
-- **Risk Discipline:** Emphasize how the hard circuit breaker protects trading capital and aligns with Futures First's core principle of *prudent risk-taking*.
