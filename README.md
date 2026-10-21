@@ -5,14 +5,7 @@ ApexDeriv is an institutional-grade derivatives trading terminal and market micr
 
 ---
 
-## 🎯 Direct Alignment with Futures First Job Description
 
-| Futures First Requirement (from Brochure) | ApexDeriv Implementation |
-| :--- | :--- |
-| **"World's most stimulating, liquid, and well-developed derivatives markets"** | Live simulation of global benchmark futures: **US 10Y/2Y Treasuries (ZN/ZT)**, **WTI/Brent Crude (CL/BZ)**, and **E-mini S&P 500 (ES)**. |
-| **"Data analysis and risk management tools and techniques"** | Real-time **Cumulative Volume Delta (CVD)**, **Volume Profile (POC/VAH/VAL)**, and strict **-$1,500 daily drawdown circuit breaker**. |
-| **"Prudent risk-taking & performance-driven bonus structure"** | Realized/Unrealized P&L engine with automatic position liquidation and trimester performance bonus projection. |
-| **"Fast-paced decision-making under volatility"** | **Trainee Flight Simulator**: interactive drill modes replaying high-impact macro shocks (FOMC Rate Hikes, CPI Prints, OPEC Cuts). |
 
 ---
 
